@@ -10,7 +10,8 @@ pgdata=$2
 port=$3
 log_dir=$4
 log_file_name="postgresql-%Y-%m-%d.log"
-pghost='*'
+#pghost='*'
+pghost=$5
 
 
 sed -i "s#\#listen_addresses = 'localhost'#listen_addresses = '"$pghost"'#g" $filename
