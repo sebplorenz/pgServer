@@ -25,4 +25,4 @@ Endpoints:
   Public-Port-Name: PORT
   Public-IP-Name: HOST
 
-Source-Url: https://github.com/rugging24/pgServer.git
+Source-Url: https://github.com/Qualitype/pgServer.git
