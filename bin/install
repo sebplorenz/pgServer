@@ -1,0 +1,27 @@
+#!/bin/bash -x
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+case "$1" in 
+	-v|--version)
+		version="$2"
+esac
+
+client_result "Postgresql-$version Installation started ..."
+
+ 
+
+$OPENSHIFT_QTPOSTGRESQL_BIN_DIR/initdb -U $PGUSER -E 'UTF8' -D $OPENSHIFT_QTPOSTGRESQL_DATA_DIR
+
+mkdir -p $OPENSHIFT_QTPOSTGRESQL_LOG_DIR
+
+erb  $OPENSHIFT_QTPOSTGRESQL_DIR/conf/pg_hba.conf.erb  > "$OPENSHIFT_QTPOSTGRESQL_DATA_DIR"/pg_hba.conf
+
+logdate=`date +%F`
+PGLOGFILE=$OPENSHIFT_QTPOSTGRESQL_LOG_DIR/postgresql-$logdate.log
+
+"$OPENSHIFT_QTPOSTGRESQL_DIR"conf/configedit "$OPENSHIFT_QTPOSTGRESQL_DATA_DIR"/postgresql.conf $OPENSHIFT_QTPOSTGRESQL_DATA_DIR $OPENSHIFT_QTPOSTGRESQL_PORT $OPENSHIFT_QTPOSTGRESQL_LOG_DIR $OPENSHIFT_QTPOSTGRESQL_HOST
+
+$OPENSHIFT_QTPOSTGRESQL_BIN_DIR/pg_ctl -U $PGUSER -D $OPENSHIFT_QTPOSTGRESQL_DATA_DIR -o "-p $OPENSHIFT_QTPOSTGRESQL_PORT" -l $PGLOGFILE start 
+
+client_result " Postgresql$version installation complete !! ..."

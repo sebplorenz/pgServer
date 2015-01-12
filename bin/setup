@@ -1,0 +1,41 @@
+#!/bin/bash -x
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+case "$1" in 
+   -v|--version)
+	version="$2"
+esac
+
+env_dir="$OPENSHIFT_QTPOSTGRESQL_DIR"env
+
+set_env_var 'OPENSHIFT_POSTGRESQL94_VERSION' $version $env_dir
+set_env_var 'PGUSER' 'postgres' $env_dir
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_PASSWORD' 'postgres' $env_dir
+
+pgversion="$OPENSHIFT_DATA_DIR"postgresql/$version
+if [ ! -e "$pgversion" ]; then
+	mkdir -p $pgversion
+        mkdir -p $pgversion/main
+	pghome=$pgversion/main
+else
+	if [ ! -e $pgversion/main ]; then
+		mkdir -p $pgversion/main
+		pghome=$pgversion/main
+	else
+		dir_count=`ls -l $pgversion | grep -c ^d`
+		dir_num=`expr $dir_count + 1`
+		mkdir -p "$pgversion/main$dir_num"
+		pghome="$pgversion/main$dir_num"
+	fi
+fi
+
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_DATA_DIR' "$pghome/data"  $env_dir
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_BIN_DIR' "$pghome/bin"  $env_dir
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_LOG_DIR'  "$pghome/data/logs" $env_dir
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_LD_LIBRARY_PATH_ELEMENT' "$pghome/lib" $env_dir
+
+tar xzf "$OPENSHIFT_QTPOSTGRESQL_DIR"versions/*.tar.gz --directory=$pghome --strip 1
+
+client_result "Database Setup Successfull ..."
+

@@ -1,0 +1,117 @@
+#!/bin/bash -x
+
+# This script starts the postgresql service at system startup
+# =============================================================
+# @Author :   Olakunle Olaniyi (Qualitype GmbH)
+# ==============================================================
+
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+PGBIN="$OPENSHIFT_QTPOSTGRESQL_BIN_DIR"
+PGDIR="$OPENSHIFT_QTPOSTGRESQL_DATA_DIR"
+PGDATA="$OPENSHIFT_QTPOSTGRESQL_DATA_DIR"
+logdate=`date +%F`
+PGLOGDIR="$OPENSHIFT_QTPOSTGRESQL_LOG_DIR"
+PGLOGFILE="$PGLOGDIR/postgresql-$logdate.log"
+port="$OPENSHIFT_QTPOSTGRESQL_PORT"
+pguser=$PGUSER
+#pid=`ps -ef | grep -v grep | grep $PGBIN/$PGUSER | awk '{print $2}'`
+#pgfile=`ps -ef | grep -v grep | grep $PGBIN/$PGUSER | awk '{print $8}'`
+
+
+#function check_running_postgres {
+#	if [ ! -e "$PGBIN/postmaster" ]; then
+#		echo "PostgreSQL can not be started because the postmaster Deamon could not be found"
+#		exit 2
+#	fi
+#
+#}
+
+#function prevent_double_start {
+#	if [ -n "$pid" ] && [ -n "$pgfile" ]; then
+#		echo "the server is already running"
+#		exit 2
+#	fi
+#}
+
+function start {
+	 $PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE start
+	
+	if [ $? -eq 0 ]; then
+		client_result "PostgreSQL server was successfully started."
+	else
+		client_result "PostgreSQL Server could not be started"
+	fi
+}
+
+function stop {
+	client_result "Stopping PostgreSQL at location $PGDIR :"
+	$PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE stop
+
+	 if [ $? -eq 0 ]; then
+		echo "PostgreSQL Server successfully stopped"
+	 else
+		echo "PostgreSQL Server could not be stopped or is not currently running"
+	 fi
+}
+
+
+function reload {
+
+	client_result "Reloading PostgreSQL at location $PGDIR :"
+	$PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE reload
+	
+	if [ $? -eq 0 ]; then
+		echo "PostgreSQL Server successfully reloading"
+	else
+		echo "PostgreSQL Server could not be reloaded"
+	fi
+}
+
+
+function restart {
+
+	client_result "Restarting PostgreSQL at location $PGDIR :"
+	$PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE restart
+	
+	if [ $? -eq 0 ]; then
+		echo "PostgreSQL Server successfully restarted"
+	else
+		echo "PostgreSQL Server could not be restarted"
+	fi
+}
+
+
+function status {
+	client_result "Status of  PostgreSQL at location $PGDIR :"
+        $PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE status
+}
+
+function usage {
+	client_result  "Usage: $0 {start|stop|restart|reload|status}"
+	exit 2
+}
+
+# calling the written functions
+
+case "$1" in 
+start)
+	start
+;;
+stop)
+	stop
+;;
+reload)
+	reload
+;;
+restart)
+	restart
+;;
+status)
+	status
+;;
+*)
+	usage
+;;
+esac

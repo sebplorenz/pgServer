@@ -1,0 +1,49 @@
+#!/bin/bash -xue
+
+if [ $# -ne 5 ]; then
+        echo "Usage: {configedit.sh file_full_path}"
+        exit 2
+fi
+
+filename=$1
+pgdata=$2
+port=$3
+log_dir=$4
+log_file_name="postgresql-%Y-%m-%d.log"
+pghost=$5
+
+
+sed -i "s#\#listen_addresses = 'localhost'#listen_addresses = '"$pghost"'#g" $filename
+sed -i "s#\#port = $port#port = $port#g" $filename
+#work_mem = 1MB
+sed -i "s#\#maintenance_work_mem = 16MB#maintenance_work_mem = 64MB#g" $filename
+sed -i "s#\#checkpoint_segments = 3#checkpoint_segments = 10#g" $filename
+sed -i "s#\#checkpoint_completion_target = 0.5#checkpoint_completion_target = 0.9#g" $filename
+sed -i "s#\#log_directory = 'pg_log'#log_directory = '"$log_dir"'#g" $filename
+sed -i "s#\#log_destination = 'stderr'#log_destination = 'stderr'#g" $filename
+sed -i "s#\#log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'#log_filename = '"$log_file_name"'#g" $filename
+sed -i "s#\#log_truncate_on_rotation = off#log_truncate_on_rotation = on#g" $filename
+sed -i "s#\#log_rotation_age = 1d#log_rotation_age = 1440#g" $filename
+sed -i "s#\#log_min_error_statement = error#log_min_error_statement = error#g" $filename
+sed -i "s#\#log_connections = off#log_connections = on#g" $filename
+sed -i "s#\#log_disconnections = off#log_disconnections = on#g" $filename
+sed -i "s#\#log_line_prefix = ''#log_line_prefix = '%t [%p]: [%l-1] db=%d,user=%d '#g" $filename
+sed -i "s#\#log_temp_files = -1#log_temp_files = 0#g" $filename
+sed -i "s#\#logging_collector = off#logging_collector = on#g" $filename
+sed -i "s#\#track_counts = on#track_counts = on#g" $filename
+sed -i "s#\#autovacuum = on#autovacuum = on#g" $filename
+sed -i "s#\#autovacuum_max_workers = 3#autovacuum_max_workers = 5#g" $filename
+sed -i "s#\#autovacuum_vacuum_threshold = 50#autovacuum_vacuum_threshold = 50#g" $filename
+sed -i "s#\#autovacuum_analyze_threshold = 50#autovacuum_analyze_threshold = 50#g" $filename
+#autovacuum_freeze_max_age = 200000000
+sed -i "s#\lc_messages = 'en_US.UTF-8'#lc_messages = 'C'#g" $filename
+sed -i "s#\#log_min_duration_statement = -1#log_min_duration_statement = 500ms#g" $filename
+sed -i "s#\#data_directory = 'ConfigDir'#\data_directory = '"$pgdata"'#g" $filename
+sed -i "s#\#hba_file = 'ConfigDir/pg_hba.conf'#\hba_file = '"$pgdata"/pg_hba.conf'#g" $filename
+sed -i "s#\#ident_file = 'ConfigDir/pg_ident.conf'#\ident_file = '"$pgdata"/pg_ident.conf'#g" $filename
+sed -i "s#\#external_pid_file = ''#\external_pid_file = '"$pgdata"/postmaster.pid'#g" $filename
+#default_statistics_target = 100
+#constraint_exclusion = partition
+#effective_cache_size = 128MB
+#wal_buffers = -1
+#max_connections = 100

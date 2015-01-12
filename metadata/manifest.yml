@@ -1,0 +1,28 @@
+Name: qtpostgresql
+Cartridge-Short-Name: QTPOSTGRESQL
+Cartridge-Version: 1.0.0
+Cartridge-Vendor: qualitypegmbh
+Display-Name: Qualitype-GmbH-PostgreSQL-Server
+Description: PostgreSQL is an advanced Object-Relational database management system
+Version: '9.4'
+License: PostgreSQL License
+Vendor: PGDG
+Website: http://www.postgresql.org
+Categories:
+- service
+- database
+- embedded
+Provides:
+- postgresql-9.4
+- qtpostgresql
+Scaling:
+  Min: 1
+  Max: -1
+Endpoints:
+- Private-IP-Name: HOST
+  Private-Port-Name: PORT
+  Private-Port: 5432
+  Public-Port-Name: PORT
+  Public-IP-Name: HOST
+
+Source-Url: https://github.com/rugging24/pgServer.git
