@@ -10,7 +10,7 @@ pgdata=$2
 port=$3
 log_dir=$4
 log_file_name="postgresql-%Y-%m-%d.log"
-pghost=$5
+pghost='*'
 
 
 sed -i "s#\#listen_addresses = 'localhost'#listen_addresses = '"$pghost"'#g" $filename
@@ -42,6 +42,8 @@ sed -i "s#\#data_directory = 'ConfigDir'#\data_directory = '"$pgdata"'#g" $filen
 sed -i "s#\#hba_file = 'ConfigDir/pg_hba.conf'#\hba_file = '"$pgdata"/pg_hba.conf'#g" $filename
 sed -i "s#\#ident_file = 'ConfigDir/pg_ident.conf'#\ident_file = '"$pgdata"/pg_ident.conf'#g" $filename
 sed -i "s#\#external_pid_file = ''#\external_pid_file = '"$pgdata"/postmaster.pid'#g" $filename
+sed -i "s#\#synchronous_commit = on#synchronous_commit = off#g" $filename
+sed -i "s#\#checkpoint_timeout = 5min#checkpoint_timeout = 10min#g" $filename
 #default_statistics_target = 100
 #constraint_exclusion = partition
 #effective_cache_size = 128MB
