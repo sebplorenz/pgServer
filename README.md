@@ -1,4 +1,7 @@
 qualitype_pgserver
 ==================
 
-Testing postgresql cool features . ;-) 
+To add this cartridge on OpenShift, use the following url :
+
+
+http://reflector-getupcloud.getup.io/github/Qualitype/pgServer
