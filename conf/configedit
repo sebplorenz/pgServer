@@ -45,6 +45,7 @@ sed -i "s#\#ident_file = 'ConfigDir/pg_ident.conf'#\ident_file = '"$pgdata"/pg_i
 sed -i "s#\#external_pid_file = ''#\external_pid_file = '"$pgdata"/postmaster.pid'#g" $filename
 sed -i "s#\#synchronous_commit = on#synchronous_commit = off#g" $filename
 sed -i "s#\#checkpoint_timeout = 5min#checkpoint_timeout = 10min#g" $filename
+sed -i "s#\#wal_level = minimal#wal_level = archive#g" $filename
 #default_statistics_target = 100
 #constraint_exclusion = partition
 #effective_cache_size = 128MB
