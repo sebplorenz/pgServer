@@ -1,0 +1,5 @@
+#!/bin/bash -uxe
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+psql -U postgres -d postgres -c "alter user postgres with encrypted password 'postgres'"

@@ -27,6 +27,6 @@ PGLOGFILE=$OPENSHIFT_QTPOSTGRESQL_LOG_DIR/postgresql-$logdate.log
 
 $OPENSHIFT_QTPOSTGRESQL_BIN_DIR/pg_ctl -U $PGUSER -D $OPENSHIFT_QTPOSTGRESQL_DATA_DIR -o "-p $OPENSHIFT_QTPOSTGRESQL_PORT" -l $PGLOGFILE start 
 
-psql -U postgres -d postgres -c "alter user postgres with encrypted password 'postgres'"
+#psql -U postgres -d postgres -c "alter user postgres with encrypted password 'postgres'"
 
 client_result " Postgresql-$version installation complete !! ..."
