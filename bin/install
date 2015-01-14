@@ -26,4 +26,4 @@ $OPENSHIFT_QTPOSTGRESQL_BIN_DIR/pg_ctl -U $PGUSER -D $OPENSHIFT_QTPOSTGRESQL_DAT
 
 psql -U postgres -d postgres -c "alter user postgres with encrypted password 'postgres'"
 
-client_result " Postgresql$version installation complete !! ..."
+client_result " Postgresql-$version installation complete !! ..."
