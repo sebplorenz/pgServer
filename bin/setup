@@ -11,7 +11,7 @@ env_dir="$OPENSHIFT_QTPOSTGRESQL_DIR"env
 
 set_env_var 'OPENSHIFT_POSTGRESQL94_VERSION' $version $env_dir
 set_env_var 'PGUSER' 'postgres' $env_dir
-set_env_var 'OPENSHIFT_QTPOSTGRESQL_PASSWORD' 'postgres' $env_dir
+#set_env_var 'OPENSHIFT_QTPOSTGRESQL_PASSWORD' 'postgres' $env_dir
 
 pgversion="$OPENSHIFT_DATA_DIR"postgresql/$version
 if [ ! -e "$pgversion" ]; then

@@ -13,6 +13,9 @@ client_result "Postgresql-$version Installation started ..."
 
 $OPENSHIFT_QTPOSTGRESQL_BIN_DIR/initdb -U $PGUSER -E 'UTF8' -D $OPENSHIFT_QTPOSTGRESQL_DATA_DIR
 
+echo "*:*:*:postgres:postgres" > $OPENSHIFT_HOMEDIR/.pgpass
+chmod 0600 $OPENSHIFT_HOMEDIR/.pgpass
+chmod 0700 $OPENSHIFT_QTPOSTGRESQL_DATA_DIR
 mkdir -p $OPENSHIFT_QTPOSTGRESQL_LOG_DIR
 
 erb  $OPENSHIFT_QTPOSTGRESQL_DIR/conf/pg_hba.conf.erb  > "$OPENSHIFT_QTPOSTGRESQL_DATA_DIR"/pg_hba.conf
