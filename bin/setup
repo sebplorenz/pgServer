@@ -17,16 +17,22 @@ pgversion="$OPENSHIFT_DATA_DIR"postgresql/$version
 if [ ! -e "$pgversion" ]; then
 	mkdir -p $pgversion
         mkdir -p $pgversion/main
+	mkdir -p $pgversion/bouncer
 	pghome=$pgversion/main
+	pgbouncer=$pgversion/bouncer
 else
 	if [ ! -e $pgversion/main ]; then
 		mkdir -p $pgversion/main
+		mkdir -p $pgversion/bouncer
 		pghome=$pgversion/main
+		pgbouncer=$pgversion/bouncer
 	else
 		dir_count=`ls -l $pgversion | grep -c ^d`
 		dir_num=`expr $dir_count + 1`
 		mkdir -p "$pgversion/main$dir_num"
+		mkdir -p "$pgversion/bouncer$dir_num"
 		pghome="$pgversion/main$dir_num"
+		pgbouncer="$pgversion/bouncer$dir_num"
 	fi
 fi
 
@@ -35,7 +41,12 @@ set_env_var 'OPENSHIFT_QTPOSTGRESQL_BIN_DIR' "$pghome/bin"  $env_dir
 set_env_var 'OPENSHIFT_QTPOSTGRESQL_LOG_DIR'  "$pghome/data/logs" $env_dir
 set_env_var 'OPENSHIFT_QTPOSTGRESQL_LD_LIBRARY_PATH_ELEMENT' "$pghome/lib" $env_dir
 
-tar xzf "$OPENSHIFT_QTPOSTGRESQL_DIR"versions/*.tar.gz --directory=$pghome --strip 1
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR' "$pgbouncer/bin"  $env_dir
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_LOG_FILE' "$pgbouncer/bin/pgbouncer.log"  $env_dir
+set_env_var 'OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BPORT' '6543'  $env_dir
+
+tar xzf "$OPENSHIFT_QTPOSTGRESQL_DIR"versions/postgresql94.tar.gz --directory=$pghome --strip 1
+tar xzf "$OPENSHIFT_QTCONNPOOLER_DIR"versions/pgbouncer.tar.gz --directory=$pgbouncer  --strip 1
 
 client_result "Database Setup Successfull ..."
 

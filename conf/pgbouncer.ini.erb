@@ -1,0 +1,12 @@
+[databases]
+* = host=<%= ENV['OPENSHIFT_QTPOSTGRESQL_HOST'] %> port=<%= ENV['OPENSHIFT_QTPOSTGRESQL_PORT'] %>
+    
+[pgbouncer]
+pool_mode = transaction
+listen_port = <%= ENV['OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BPORT'] %>
+listen_addr = <%= ENV['OPENSHIFT_QTPOSTGRESQL_HOST'] %>
+auth_type = trust
+auth_file = <%= ENV['OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR'] %>/users.txt
+logfile = <%= ENV['OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR'] %>/pgbouncer.log
+pidfile = <%= ENV['OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR'] %>/pgbouncer.pid
+admin_users = <%= ENV['PGUSER'] %>

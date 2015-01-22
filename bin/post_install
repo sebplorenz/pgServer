@@ -3,3 +3,5 @@
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
 psql -U postgres -d postgres -c "alter user postgres with encrypted password 'postgres'"
+
+#$OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR/pgbouncer -d $OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR/pgbouncer.ini

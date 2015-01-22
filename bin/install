@@ -20,6 +20,10 @@ mkdir -p $OPENSHIFT_QTPOSTGRESQL_LOG_DIR
 
 erb  $OPENSHIFT_QTPOSTGRESQL_DIR/conf/pg_hba.conf.erb  > "$OPENSHIFT_QTPOSTGRESQL_DATA_DIR"/pg_hba.conf
 
+erb  $OPENSHIFT_QTPOSTGRESQL_DIR/conf/pgbouncer.ini.erb  > "$OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR"/pgbouncer.ini
+erb  $OPENSHIFT_QTPOSTGRESQL_DIR/conf/users.txt.erb  > "$OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR"/users.txt
+
+
 logdate=`date +%F`
 PGLOGFILE=$OPENSHIFT_QTPOSTGRESQL_LOG_DIR/postgresql-$logdate.log
 

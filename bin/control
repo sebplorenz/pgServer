@@ -16,6 +16,11 @@ PGLOGDIR="$OPENSHIFT_QTPOSTGRESQL_LOG_DIR"
 PGLOGFILE="$PGLOGDIR/postgresql-$logdate.log"
 port="$OPENSHIFT_QTPOSTGRESQL_PORT"
 pguser=$PGUSER
+pgbouncerBin=$OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BIN_DIR
+pgbouncerPort=$OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_BPORT
+
+#OPENSHIFT_QTPOSTGRESQL_PGBOUNCER_LOG_FILE
+
 #pid=`ps -ef | grep -v grep | grep $PGBIN/$PGUSER | awk '{print $2}'`
 #pgfile=`ps -ef | grep -v grep | grep $PGBIN/$PGUSER | awk '{print $8}'`
 
@@ -37,9 +42,14 @@ pguser=$PGUSER
 
 function start {
 	 $PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE start
-	
+	 
 	if [ $? -eq 0 ]; then
 		client_result "PostgreSQL server was successfully started."
+		if [ ! -z "`ps -ef | grep -v grep | grep pgbouncer | awk '{print $2}'`" ]; then 
+			psql -p $pgbouncerPort  -U $pguser pgbouncer  -c "reload"
+		else 
+			$pgbouncerBin/pgbouncer -d $pgbouncerBin/pgbouncer.ini
+		fi
 	else
 		client_result "PostgreSQL Server could not be started"
 	fi
@@ -47,10 +57,18 @@ function start {
 
 function stop {
 	client_result "Stopping PostgreSQL at location $PGDIR :"
+
+	if [ ! -z "`ps -ef | grep -v grep | grep pgbouncer | awk '{print $2}'`" ]; then
+                     psql -p $pgbouncerPort  -U $pguser pgbouncer  -c 'shutdown'
+        fi
+
+
 	$PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE stop
+	
 
 	 if [ $? -eq 0 ]; then
 		echo "PostgreSQL Server successfully stopped"
+	
 	 else
 		echo "PostgreSQL Server could not be stopped or is not currently running"
 	 fi
@@ -64,6 +82,11 @@ function reload {
 	
 	if [ $? -eq 0 ]; then
 		echo "PostgreSQL Server successfully reloading"
+
+		 if [ ! -z "`ps -ef | grep -v grep | grep pgbouncer | awk '{print $2}'`" ]; then
+                     psql -p $pgbouncerPort  -U $pguser pgbouncer  -c "reload"
+                 fi
+
 	else
 		echo "PostgreSQL Server could not be reloaded"
 	fi
@@ -77,6 +100,11 @@ function restart {
 	
 	if [ $? -eq 0 ]; then
 		echo "PostgreSQL Server successfully restarted"
+
+		 if [ ! -z "`ps -ef | grep -v grep | grep pgbouncer | awk '{print $2}'`" ]; then
+                     psql -p $pgbouncerPort  -U $pguser pgbouncer  -c "reload"
+                 fi
+
 	else
 		echo "PostgreSQL Server could not be restarted"
 	fi
@@ -86,6 +114,9 @@ function restart {
 function status {
 	client_result "Status of  PostgreSQL at location $PGDIR :"
         $PGBIN/pg_ctl -U $pguser -D $PGDATA -l $PGLOGFILE status
+	
+	#displaying if pgbouncer has any running process or not 
+	ps -ef | grep -v grep | grep pgbouncer
 }
 
 function usage {
