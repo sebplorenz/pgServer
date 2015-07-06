@@ -15,6 +15,9 @@ Categories:
 Provides:
 - postgresql-9.4
 - qtpostgresql
+Publishes:
+  publish-db-connection-info:
+    Type: ENV:NET_TCP:db:connection-info
 Scaling:
   Min: 1
   Max: -1
@@ -22,7 +25,7 @@ Endpoints:
 - Private-IP-Name: HOST
   Private-Port-Name: PORT
   Private-Port: 5432
-  Public-Port-Name: PORT
-  Public-IP-Name: HOST
+  Public-Port-Name: DB_PROXY_PORT
+  Public-IP-Name: PUBLIC_HOST
 
 Source-Url: https://github.com/Qualitype/pgServer.git
